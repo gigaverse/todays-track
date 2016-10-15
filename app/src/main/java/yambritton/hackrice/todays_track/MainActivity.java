@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void mergeAudio(String video, String audio)
     {
         FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        String[] cmd = {String.format("ffmpeg -i %s -i %s -c:v copy -c:a copy output.mp4", video, audio)};
+        String[] cmd = String.format("-i %s -i %s -c:v copy -c:a copy output.mp4", video, audio).split(" ");
         try {
         ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
 
