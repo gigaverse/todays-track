@@ -1,6 +1,9 @@
 package yambritton.hackrice.todays_track;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,92 +23,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //This is where I put the test buttons
-        final Button videobutton = (Button) findViewById(R.id.videobutton);
-
-        videobutton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //  select video
-
-            }
-        });
-
-        final Button audiobutton = (Button) findViewById(R.id.audiobutton);
-
-        audiobutton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // select audio
-            }
-        });
-
-        final Button outputbutton = (Button) findViewById(R.id.outputbutton);
-
-        outputbutton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // generate output
-            }
-        });
-
     }
-    //TODO -- DETERMINE IF THIS SHOULD REALLY BE VOID
-
-    protected void splitAudio(String audio, int time)
-    {
-        FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        String[] cmd = String.format("-ss 10 -t 6 -i %s output.mp3", audio).split(" ");
-        try {
-            ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
-
-                @Override
-                public void onStart() {}
-
-                @Override
-                public void onProgress(String message) {}
-
-                @Override
-                public void onFailure(String message) {}
-
-                @Override
-                public void onSuccess(String message) {}
-
-                @Override
-                public void onFinish() {}
-            });
-        } catch (FFmpegCommandAlreadyRunningException f)
-        {
-            Log.d("FAILURE", "audio trim fuckup");
-        }
-    }
-
-    protected void mergeAudio(String video, String audio)
-    {
-        FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        String[] cmd = String.format("-i %s -i %s -c:v copy -c:a copy output.mp4", video, audio).split(" ");
-        try {
-        ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
-
-            @Override
-            public void onStart() {}
-
-            @Override
-            public void onProgress(String message) {}
-
-            @Override
-            public void onFailure(String message) {}
-
-            @Override
-            public void onSuccess(String message) {}
-
-            @Override
-            public void onFinish() {}
-        });
-        } catch (FFmpegCommandAlreadyRunningException f)
-        {
-            Log.d("FAILURE", "audio video merge fuckup");
-        }
-    }
-
-
-
 
 }

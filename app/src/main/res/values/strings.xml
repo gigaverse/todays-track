@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">todays-track</string>
+    <string name="title_activity_testing">testing</string>
 </resources>
