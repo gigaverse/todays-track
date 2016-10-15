@@ -46,9 +46,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
     //TODO -- DETERMINE IF THIS SHOULD REALLY BE VOID
+
+    protected void splitAudio(String audio, int time)
+    {
+        FFmpeg ffmpeg = FFmpeg.getInstance(this);
+        String[] cmd = String.format("-ss 10 -t 6 -i %s output.mp3", audio).split(" ");
+        try {
+            ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {}
+
+                @Override
+                public void onProgress(String message) {}
+
+                @Override
+                public void onFailure(String message) {}
+
+                @Override
+                public void onSuccess(String message) {}
+
+                @Override
+                public void onFinish() {}
+            });
+        } catch (FFmpegCommandAlreadyRunningException f)
+        {
+            Log.d("FAILURE", "audio trim fuckup");
+        }
+    }
+
     protected void mergeAudio(String video, String audio)
     {
         FFmpeg ffmpeg = FFmpeg.getInstance(this);
@@ -73,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         });
         } catch (FFmpegCommandAlreadyRunningException f)
         {
-            Log.d("FAILURE", "Already been done son");
+            Log.d("FAILURE", "audio video merge fuckup");
         }
     }
 
