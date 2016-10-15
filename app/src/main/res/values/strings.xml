@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">todays-track</string>
     <string name="title_activity_testing">testing</string>
+    <string-array name="tools">
+        <item>Select Video</item>
+        <item>Select Audio</item>
+        <item>Trim Video</item>
+        <item>Trim Audio</item>
+        <item>Now Playing Filter</item>
+        <item>Change Volume Levels</item>
+    </string-array>
 </resources>
