@@ -29,8 +29,10 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunnin
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class testing extends AppCompatActivity {
 
@@ -138,61 +140,87 @@ public class testing extends AppCompatActivity {
             }
         }
     }
-
-    protected void splitAudio(String audio, int time)
+    //This will take an absolute path to an audio file, and trim it at time pos for length time
+    protected void splitAudio(String audio, double pos, double time)
     {
         FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        String[] cmd = String.format("-ss 10 -t 6 -i %s output.mp3", audio).split(" ");
+        String[] cmd = String.format(Locale.ENGLISH, "-y -ss %.2f -t %.2f -i %s output.mp3",pos, time, audio).split(" ");
         try {
             ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
 
                 @Override
-                public void onStart() {}
+                public void onStart() {
+                    Log.d("inputstring", "START MUSIC TRIMMER");
+                }
 
                 @Override
-                public void onProgress(String message) {}
+                public void onProgress(String message) {
+                    Log.d("inputstring", message);
+                }
 
                 @Override
-                public void onFailure(String message) {}
+                public void onFailure(String message) {
+                    Log.d("inputstring", "MUSIC TRIMMER FAIL:" + message);
+                }
 
                 @Override
-                public void onSuccess(String message) {}
+                public void onSuccess(String message) {
+                    Log.d("inputstring", "MUSIC TRIMMER SUCCESS:" + message);
+                }
 
                 @Override
-                public void onFinish() {}
+                public void onFinish() {
+                    Log.d("inputstring", "END MUSIC TRIMMER");
+                }
             });
         } catch (FFmpegCommandAlreadyRunningException f)
         {
             Log.d("FAILURE", "audio trim fuckup");
         }
     }
-
+    //This will merge the video and audio at the paths provided as parameters
+    // -- REMEMBER TO CUT AUDIO LENGTH DOWN TO VIDEO LENGTH --
     protected void mergeAudio(String video, String audio) throws IOException
     {
         FFmpeg ffmpeg = FFmpeg.getInstance(this);
-        String[] cmd = "-i %s -i %s -c:v copy -c:a copy storage/emulated/0/todaytrack/output.mp4".split(" ");
-        File file = new File(this.getExternalFilesDir(), "");
-        Log.d("inputstring", file.getAbsolutePath());
-        cmd[1] = video;
-        cmd[3] = audio;
+        String[] cmd = "-y -i %s -i %s -c:v copy -c:a copy /storage/emulated/0/output.mp4".split(" ");
+        String content = "hello world";
+        File file;
+        FileOutputStream outputStream;
+        try {
+            file = new File(Environment.getExternalStorageDirectory(), "output.mp4");
+            Log.d("inputstring", file.getAbsolutePath());
+            outputStream = new FileOutputStream(file);
+            outputStream.write(content.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
+            Log.d("inputstring", "DAMNIT!" + e.toString());
+            e.printStackTrace();
+        }
+        cmd[2] = video;
+        cmd[4] = audio;
         Log.d("inputstring", Arrays.toString(cmd));
         try {
             ffmpeg.execute(cmd, new ExecuteBinaryResponseHandler() {
 
                 @Override
-                public void onStart() {}
+                public void onStart() {
+                    Log.d("inputstring", "START");
+                }
 
                 @Override
-                public void onProgress(String message) {}
-
-                @Override
-                public void onFailure(String message) {
+                public void onProgress(String message) {
                     Log.d("inputstring", message);
                 }
 
                 @Override
+                public void onFailure(String message) {
+                    Log.d("inputstring", "VIDEO MIXER FAILURE: " + message);
+                }
+
+                @Override
                 public void onSuccess(String message) {
-                    Log.d("inputstring", message);
+                    Log.d("inputstring", "VIDEO MIXER SUCCESS: " + message);
                 }
 
                 @Override
@@ -227,7 +255,7 @@ public class testing extends AppCompatActivity {
         } catch (FFmpegNotSupportedException e) {
             // Handle if FFmpeg is not supported by device
         }
-
+23
     }
 
     public String getPath(Uri contentUri)
