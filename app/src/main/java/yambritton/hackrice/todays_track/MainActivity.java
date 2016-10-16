@@ -154,6 +154,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("data", data.getData().toString());
                 audioUri=data.getData();
                 //TODO play new audio
+                try {
+                    mp.setDataSource(this, audioUri);
+                    mp.seekTo(0);
+                    mp.prepare();
+                    mp.start();
+                } catch (Exception e)
+                {
+                    Log.i("inputstring", e.toString());
+
+                }
             }
         }
         if(requestCode==2){//returning from trim video
@@ -266,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
                 mp.stop();
                 mp.setDataSource(context, Uri.fromFile(new File(audioPath)));
                 video.seekTo(0);
+                mp.prepare();
                 mp.start();
 
             }

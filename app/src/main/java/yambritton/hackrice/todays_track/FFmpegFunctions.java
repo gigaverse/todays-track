@@ -51,7 +51,6 @@ class FFmpegFunctions {
                 public void onFinish() {}
             });
         } catch (FFmpegNotSupportedException e) {
-            // TODO Handle if FFmpeg is not supported by device
         }
 
         //CREATE THE LOCATION THAT ALL FILES WILL BE STORED
@@ -115,7 +114,7 @@ class FFmpegFunctions {
                     Log.d("inputstring", "close");
                     if(tempAudio.getAbsolutePath().contains("todaystrack"))
                     {
-                     //   tempAudio.delete();
+                        tempAudio.delete();
                     }
                     MainActivity.refresh();
                 }
@@ -216,7 +215,7 @@ class FFmpegFunctions {
 }
 
 
-    /* todo put this code in the select video section if needed
+    /*
     public void pickVideo(){
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent , 1);
