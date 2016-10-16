@@ -72,7 +72,6 @@ class FFmpegFunctions {
     public static String mergeAudio(String video, String audio, Context context) throws IOException {
         FFmpeg ffmpeg = FFmpeg.getInstance(context);
 
-        //todo Determine file name
         String filename = getFileName(".mp4");
 
         //TOUCH A FILE SO FFmpeg CAN WRITE TO IT
@@ -108,15 +107,17 @@ class FFmpegFunctions {
                 @Override
                 public void onSuccess(String message) {
                     Log.d("inputstring", "VIDEO MIXER SUCCESS: " + message);
-                    if(tempAudio.getAbsolutePath().contains("todaystrack"))
-                    {
-                        tempAudio.delete();
-                    }
+
                 }
 
                 @Override
                 public void onFinish() {
                     Log.d("inputstring", "close");
+                    if(tempAudio.getAbsolutePath().contains("todaystrack"))
+                    {
+                     //   tempAudio.delete();
+                    }
+                    MainActivity.refresh();
                 }
             });
         } catch (FFmpegCommandAlreadyRunningException f) {
@@ -163,6 +164,7 @@ class FFmpegFunctions {
                 @Override
                 public void onFinish() {
                     Log.d("inputstring", "END MUSIC TRIMMER");
+
                 }
             });
         } catch (FFmpegCommandAlreadyRunningException f)
@@ -213,33 +215,6 @@ class FFmpegFunctions {
 
 }
 
-
-
-
-  /* todo use this snippet for permissions on android 6
-    //GETTING PERMISSION FOR EVERYTHING
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-     */
 
     /* todo put this code in the select video section if needed
     public void pickVideo(){

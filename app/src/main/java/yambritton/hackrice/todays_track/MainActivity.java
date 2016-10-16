@@ -1,13 +1,20 @@
 package yambritton.hackrice.todays_track;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Debug;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,19 +31,60 @@ import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 
+import java.io.File;
+import java.net.URI;
+
+import static yambritton.hackrice.todays_track.FFmpegFunctions.*;
 import static yambritton.hackrice.todays_track.R.id.videoView;
 
 public class MainActivity extends AppCompatActivity {
-    private VideoView video;
+    private static VideoView video;
     private String[] mToolTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    //These will always be the original source files
     private Uri videoUri;
     private Uri audioUri;
+    //These will be used for trimmed values
+    private static String audioPath = "", videoPath = "";
+    //Lets let our media players be accessible throughout the program
+    private static MediaPlayer mp = new MediaPlayer();
+    //Here's a reference to the current context
+    private static Context context;
+
+    private double videoLength = 0, audioLength = 0;
+    private int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Create the Context
+        context = this;
+        //init FFMPEG
+        FFmpegInit(this);
+        //PERMISSION FOR ANDROID 6.0
+        //GETTING PERMISSION FOR EVERYTHING
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
         //loops video player
         video  = (VideoView) findViewById(videoView);
         video.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.bg);
@@ -89,6 +137,14 @@ public class MainActivity extends AppCompatActivity {
                 VideoView video = (VideoView) findViewById(videoView);
                 video.setVideoURI(data.getData());
                 videoUri=data.getData();
+
+                //This is to get the video length for audio cutting purposes
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(this, videoUri);
+                String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                videoLength = 1.0*Long.parseLong(time)/1000.0;
+                Log.d("inputstring", videoLength + " <-- VIDEO LENGTH");
+
                 video.start();
             }
         }
@@ -104,9 +160,26 @@ public class MainActivity extends AppCompatActivity {
             //TODO replace videoUri with new one
             video.start();
         }
-        if(requestCode==3){//returning from trim audio
+        if(requestCode==4){//returning from trim audio
             //TODO replace audioUri with new one
+            if(audioUri == null) return;
+            audioPath = FFmpegFunctions.getPath(audioUri, this);
+            Log.i("inputstring", audioPath);
+            if(videoLength != -1) {
+                audioPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                        "/todaystrack/" +
+                        FFmpegFunctions.splitAudio(audioPath, 0, videoLength, this);
+            }
+            Log.d("inputstring", audioPath);
             video.start();
+            try {
+                videoPath =  "/storage/emulated/0/todaystrack/" +
+                        FFmpegFunctions.mergeAudio(FFmpegFunctions.getPath(videoUri, this),
+                                audioPath, this);
+            } catch (Exception e)
+            {
+                Log.i("inputstring", "video render crash");
+            }
         }
         if(requestCode==5){//returning from volume adjustment
             video.start();
@@ -168,6 +241,38 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Select a video first!", Toast.LENGTH_SHORT).show();
                 break;
             default:
+        }
+
+    }
+
+    //RELOAD FILES INTO THE VIDEO AND MEDIA PLAYER AND START PLAYING
+    public static void refresh()
+    {
+        if(!videoPath.equals(""))
+        {
+            video.stopPlayback();
+            video.setVideoPath(videoPath);
+            video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                    video.start();
+                }
+            });
+        }
+        else if(!audioPath.equals(""))
+        {
+            try {
+                mp.stop();
+                mp.setDataSource(context, Uri.fromFile(new File(audioPath)));
+                video.seekTo(0);
+                mp.start();
+
+            }
+            catch(Exception e)
+            {
+                Log.d("interesting", e.toString());
+            }
         }
     }
 
