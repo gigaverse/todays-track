@@ -8,34 +8,34 @@ import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
 
-import static yambritton.hackrice.todays_track.R.id.videoView;
 import static yambritton.hackrice.todays_track.R.id.videoView2;
 
-public class trim_video extends AppCompatActivity {
-    private VideoView video;
+public class TrimAudio extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trim_video);
-        video  = (VideoView) findViewById(videoView2);
-        if(getIntent().getStringExtra("VIDEO")!=null) {
-            Log.d("videoUri","this: "+getIntent().getStringExtra("VIDEO").toString());
-            Uri uri = Uri.parse(getIntent().getStringExtra("VIDEO"));
-            video.setVideoURI(uri);
+        setContentView(R.layout.activity_trim_audio);
+        //video  = (VideoView) findViewById(videoView2);TODO: Find equivalent for audio
+        if(getIntent().getStringExtra("AUDIO")!=null) {
+            Log.d("videoUri","this: "+getIntent().getStringExtra("AUDIO"));
+            Uri uri = Uri.parse(getIntent().getStringExtra("AUDIO"));
+            /*video.setVideoURI(uri);
             video.start();
-            video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {TODO: again, set up for audio
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     mp.setLooping(true);
                 }
             });
+            */
+            //TODO implement audio trimming
         }
         else
             Log.e("intent","trim intent missing!");
+
     }
     public void back(View view){
-        Log.d("trimV","retuning");
-        video.stopPlayback();
-        finish();
+        finishActivity(4);
     }
 }

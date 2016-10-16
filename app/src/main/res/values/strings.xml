@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">todays-track</string>
+    <string name="app_name">Today\'s track</string>
     <string name="title_activity_testing">testing</string>
     <string-array name="tools">
         <item>Select Video</item>

@@ -8,18 +8,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
 
-import static yambritton.hackrice.todays_track.R.id.videoView;
-import static yambritton.hackrice.todays_track.R.id.videoView2;
 
-public class trim_video extends AppCompatActivity {
+public class volume extends AppCompatActivity {
     private VideoView video;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trim_video);
-        video  = (VideoView) findViewById(videoView2);
+        setContentView(R.layout.activity_volume);
+        video  = (VideoView) findViewById(R.id.videoView4);
         if(getIntent().getStringExtra("VIDEO")!=null) {
-            Log.d("videoUri","this: "+getIntent().getStringExtra("VIDEO").toString());
+            Log.d("videoUri","this: "+getIntent().getStringExtra("VIDEO"));
             Uri uri = Uri.parse(getIntent().getStringExtra("VIDEO"));
             video.setVideoURI(uri);
             video.start();
@@ -34,8 +32,8 @@ public class trim_video extends AppCompatActivity {
             Log.e("intent","trim intent missing!");
     }
     public void back(View view){
-        Log.d("trimV","retuning");
         video.stopPlayback();
         finish();
+        //TODO tell user this will finalize the audio into the video
     }
 }
