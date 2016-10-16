@@ -84,7 +84,10 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode==2){//returning from trim video
             //TODO replace videoUri with new one
             video.start();
-            Log.d("video","return");
+        }
+        if(requestCode==3){//returning from trim audio
+            //TODO replace audioUri with new one
+            video.start();
         }
         if(requestCode==5){//returning from volume adjustment
             video.start();
