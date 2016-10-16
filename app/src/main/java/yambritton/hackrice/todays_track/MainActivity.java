@@ -191,6 +191,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("inputstring", "video render crash");
             }
         }
+        if(requestCode==4){//returning from trim audio
+            //TODO apply filter to the video
+            video.start();
+        }
         if(requestCode==5){//returning from volume adjustment
             video.start();
             //TODO replace with new video- Audio will be hardcoded at this point
@@ -232,9 +236,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 4://now playing filter
                 if(videoUri!=null) {
-                    intent = new Intent(this, volume.class);//gotta change this
+                    intent = new Intent(this, Filter.class);//gotta change this
                     intent.putExtra("VIDEO", videoUri.toString());
                     Log.d("videoUri","this: "+videoUri.toString());
+                    video.stopPlayback();
                     startActivityForResult(intent, 3);
                 }
                 else
