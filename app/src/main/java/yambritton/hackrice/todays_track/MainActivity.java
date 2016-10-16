@@ -1,5 +1,6 @@
 package yambritton.hackrice.todays_track;
 
+import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,10 +39,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //loops video player
         video  = (VideoView) findViewById(videoView);
+        video.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.bg);
+        //video.start();
         video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.setLooping(true);
+                video.start();
             }
         });
 
@@ -54,14 +58,29 @@ public class MainActivity extends AppCompatActivity {
                 R.layout.drawer_list_item, mToolTitles));
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerLayout.openDrawer(mDrawerList);
+        //mDrawerLayout.openDrawer(mDrawerList);
 
+
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
     public void pickMedia(View view){
         mDrawerLayout.openDrawer(mDrawerList);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         // Check which request we're responding to
         if (requestCode == 0) {
             // Make sure the request for video was successful
@@ -97,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     private void selectItem(int position) {
         mDrawerList.setItemChecked(position, true);
         mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerList.clearChoices();
         Intent intent;
         switch(position){
             case 0://choose video
