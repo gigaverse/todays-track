@@ -8,17 +8,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.VideoView;
 
-import static yambritton.hackrice.todays_track.R.id.videoView;
-import static yambritton.hackrice.todays_track.R.id.videoView2;
 
-public class trim_video extends AppCompatActivity {
+public class volume extends AppCompatActivity {
     private VideoView video;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trim_video);
+        setContentView(R.layout.activity_volume);
 
-        View decorView = getWindow().getDecorView();//fullscreen and pretty
+        View decorView = getWindow().getDecorView();//fullscreen
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -26,9 +24,10 @@ public class trim_video extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        video  = (VideoView) findViewById(videoView2);
+
+        video  = (VideoView) findViewById(R.id.videoView4);
         if(getIntent().getStringExtra("VIDEO")!=null) {
-            Log.d("videoUri","this: "+getIntent().getStringExtra("VIDEO").toString());
+            Log.d("videoUri","this: "+getIntent().getStringExtra("VIDEO"));
             Uri uri = Uri.parse(getIntent().getStringExtra("VIDEO"));
             video.setVideoURI(uri);
             video.start();
@@ -43,8 +42,8 @@ public class trim_video extends AppCompatActivity {
             Log.e("intent","trim intent missing!");
     }
     public void back(View view){
-        Log.d("trimV","retuning");
         video.stopPlayback();
         finish();
+        //TODO tell user this will finalize the audio into the video
     }
 }
