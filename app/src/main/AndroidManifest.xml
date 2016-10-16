@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="yambritton.hackrice.todays_track">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:exported="true"
@@ -27,7 +28,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".trim_video" />
         <activity android:name=".volume" />
-        <activity android:name=".TrimAudio"></activity>
+        <activity android:name=".TrimAudio" />
+        <activity
+            android:name=".Filter"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_filter"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>
